@@ -1,4 +1,5 @@
 let DATA = {};
+let idEveryUser = 0;
 
 function init() {
     fetch('users.json')
@@ -20,6 +21,7 @@ function oneUser(index){
 
         let spanFirstName = document.createElement("span");
         spanFirstName.innerHTML = users[index].first_name;
+        
         divItem.append(spanFirstName);
 
         let spanLastName = document.createElement("span");
@@ -75,19 +77,17 @@ function createUser(){
 
     let form = document.createElement("form");
     divItem.append(form);
-    let inputFirstName = document.createElement("input");
-    inputFirstName.value = ``;
-    form.append(inputFirstName);
-    inputFirstName.addEventListener('change', updateValue);
-    function updateValue(e) {
-        divNewUser.textContent = e.target.value;
-    }
+    let firstName = document.createElement("input");
+    firstName.setAttribute("type", "text");
+    firstName.setAttribute("id", "fName");
+    firstName.value = ``;
+    form.append(firstName);
 
-
-
-    let inputLastName = document.createElement("input");
-    inputLastName.value = ``;
-    form.append(inputLastName);
+    let lastName = document.createElement("input");
+    lastName.value = ``;
+    lastName.setAttribute("type", "text");
+    lastName.setAttribute("id", "lName")    
+    form.append(lastName);
 
     let inputEmail = document.createElement("input");
     inputEmail.value = ``;
@@ -111,10 +111,14 @@ function createUser(){
     let button = document.createElement("button");
     button.innerText = "Save";
     form.append(button);
-    button.addEventListener("click", function() {
-        console.log("you clicked region number " );
-    })
 
+    button.addEventListener("click", function(e){
+        e.preventDefault();
+        let contentUsers = document.getElementById("contentUsers");
+        contentUsers.innerHTML = "";
+        saveNewUser();
+
+    }, false);
 }
 
 function deleteUser(deleteId) {
@@ -125,6 +129,27 @@ function deleteUser(deleteId) {
         div.removeChild(div.firstChild);
     }
 }
+function saveNewUser(){
+    let obj = {
+        "id" : idEveryUser,
+        "first_name": document.getElementById("fName").value,
+        "last_name": document.getElementById("lName").value,
+        /*"email": document.getElementById("e").value,
+        "gender": function (){
+            if(document.getElementById("male").checked === true)
+                return "Male";
+            else return "Famale";
+        }(),
+        "ip_address": document.getElementById("a").value,
+        */
+    }
+    DATA.users.push(obj);
+    showAllUsers();
+    let contentEditUser = document.getElementById("contentEditUser");
+    contentEditUser.innerHTML = "";
+
+}
+
 function editeUser(id) {
     let users = DATA.users;
     for (let i = 0; i < users.length; i++) {
@@ -166,7 +191,6 @@ function editeUser(id) {
 
             let button = document.createElement("button");
             button.innerText = "Save";
-            button.onclick = console.log("Saved");
             form.append(button);
         }
     }
